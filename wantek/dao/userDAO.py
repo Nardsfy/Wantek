@@ -1,6 +1,3 @@
-from sqlite3 import Cursor
-from typing import final
-from urllib import response
 from wantek import dbConnect
 from wantek.models.respon import *
 
@@ -15,9 +12,9 @@ def getUser(p_username, p_password):
         data = rowsToDict(cursor)        
         cursor.fetchone()               
         if data:                   
-            return responseJSON(200, "T", "Data user ditemukan.", data)
+            return responseJSON(200, "T", "User data found.", data)
         else:
-            return responseJSON(200, "T", "Data user tidak ditemukan.", [])
+            return responseJSON(200, "T", "User data not found.", [])
     except Exception as error:
         return responseJSON(400, "F", error, [])
     finally:

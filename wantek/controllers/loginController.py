@@ -1,3 +1,4 @@
+import hashlib
 from flask import render_template, url_for, request, session, flash, redirect
 from wantek import app
 from wantek.controllers.validateLogin import validate_login
@@ -19,16 +20,20 @@ def logout():
 @app.route("/login_post", methods=["POST"])
 def loginPost():
     session["logged_in"] = False
-    username = request.form.get("username")    
-    password = request.form.get("password")    
-    dataUser = getUser(username, password)    
-    if dataUser["status"] == "F":
+    v_username = request.form.get("username")    
+    password = request.form.get("password") 
+    hashPassword = hashlib.md5(password.encode())
+    v_password = hashPassword.hexdigest()   
+    dataUser = getUser(v_username, v_password)      
+    if dataUser["status"] == "F": # if error from dao select data user
         flash(dataUser["message"], "error")
         return redirect(url_for("login"))
-    else:        
-        session["username"] = dataUser["result"][0]["username"]
-        session["roles"] = dataUser["result"][0]["roles"]    
-        session["logged_in"] = True    
-
-        return redirect(url_for("dashboard"))
-
+    else:              
+        if dataUser["result"]: # make sure user credentials match with database user           
+            session["username"] = dataUser["result"][0]["username"]        
+            session["roles"] = dataUser["result"][0]["roles"]    
+            session["logged_in"] = True
+            return redirect(url_for("dashboard"))
+        else:
+            flash(dataUser["message"], "error")
+            return redirect(url_for("login"))

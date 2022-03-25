@@ -1,26 +1,131 @@
 {% extends "layout.html" %} {% block content %}
 <body>     
-    <div class="container">
+    <div class="container mt-2">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}                                                  
+                {% for category, message in messages %}
+                    <div class="row alert {% if category == 'error' %}alert-danger {% elif category == 'success' %} alert-success {% endif %}"
+                    role="alert">
+                        <div class="col text-center">
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}                                
+            {% endif %}
+        {% endwith %}
+        <div class="row">
+            <div class="col">
+                <h3>{{ menu }}</h3>                
+            </div>
+            <div class="col text-right">
+                <i class="fa fa-plus" style="font-size: 2rem;" data-toggle="modal" data-target="#modalInsertUser" role="button"></i>
+            </div>
+        </div>
         <div class="row">
             <div class="col">
                 <!-- table list user -->
-                <table id="tableListUser" class="table table-stripped">
-                    <tr>
-                        <th>No</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Roles</th>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>adm77</td>
-                        <td>sha52Asdcxz13</td>
-                        <td>admin</td>
-                    </tr>
+                <table id="tableListUser" class="table table-bordered w-100">
+                    <thead>
+                        <tr class="text-center">
+                            <th>No</th>
+                            <th>Username</th>
+                            <th>Password</th>
+                            <th>Roles</th>
+                            <th colspan="2">Action</th>
+                        </tr>
+                        <!-- row to initialize column to avoid 'mData' error with dataTables -->
+                        <tr style="display: none;">
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>                        
+                        {% for val in data %}
+                            <tr class="text-center">
+                                <td>{{loop.index}}</td>
+                                <td>{{val.username}}</td>
+                                <td>{{val.password}}</td>
+                                <td>{{val.roles}}</td>
+                                <td>
+                                    <i class="fa fa-edit"></i>
+                                </td>
+                                <td>
+                                    <i class="fa fa-trash"></i>
+                                </td>
+                            </tr>  
+                        {% endfor %}                                              
+                    </tbody>
                 </table>
                 <!-- end table list user -->
             </div>
         </div>
     </div>    
+
+    <!-- modal insert user -->
+    <div id="modalInsertUser" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Add new user</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id="addUser" method="POST" action="{{ url_for('addUser') }}">
+                <div class="modal-body">
+                    <div class="row">                                                     
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="username">Username</label>                        
+                                <input type="text" id="username" name="username" class="form-control" placeholder="Username.." required>                    
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Password.." required>                    
+                            </div>
+                        </div>                               
+                    </div>  
+                    <div class="row">
+                        <div class="col">                                                                                           
+                            <select class="form-control" id="role" name="role">
+                                <option name="admin" value="admin">Admin</option>
+                                <option name="member" value="member">Member</option>
+                            </select>                                                            
+                        </div>
+                    </div>                                      
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add user</button>              
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
 </body>
+
+<script type="text/javascript">
+    $(document).ready( ()=> {
+        // search table user by "username"
+        $("#tableListUser").DataTable({    
+            "columnDefs": [
+                {
+                    "targets": [1],
+                    "searchable": true
+                },
+                {
+                    "targets": "_all",
+                    "searchable": false
+                }
+            ],     
+            pageLength: 10,
+            lengthChange : false,
+            sort: false
+        });
+        
+    });
+</script>
 {% endblock %}
