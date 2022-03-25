@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>
+            {{ namaAplikasi }} {% if menu %} - {% endif %} {{ menu }}
+        </title>
+
+        <!-- Font Awesome 6 -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free-6.0.0-web/css/all.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free-6.0.0-web/css/fontawesome.min.css') }}">                
+        <!-- Bootstrap 4 -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.6.1-dist/css/bootstrap.min.css') }}">
+
+        <!-- JQuery -->
+        <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
+        <!-- Bootstrap 4 -->
+        <script src="{{ url_for('static', filename='bootstrap-4.6.1-dist/js/bootstrap.min.js') }}"></script>
+        <!-- Font Awesome 6 -->
+        <script src="{{ url_for('static', filename='fontawesome-free-6.0.0-web/js/fontawesome.min.js') }}"></script>        
+    </head>
+    <body>      
+        {% if session["logged_in"] %}     
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='assets/wantek-logos/wantek-logos_white.png') }}" alt="" width="40" height="35">
+            </a>  
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <!-- Dashboard -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if menu == 'Dashboard' %}active {% endif %}" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <!-- Admin Menu -->
+                    {% if session["roles"] == 'admin' %}
+                    <li class="nav-item">
+                        <div class="dropdown {% if menu == 'Master' %} show {% endif %}">
+                            <a class="dropdown-toggle nav-link" role="button" data-toggle="dropdown">
+                            Master
+                            </a>                      
+                            <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ url_for('masterUser') }}">Master user</a>
+                            <a class="dropdown-item" href="{{ url_for('masterStock') }}">Master stock</a>                            
+                            </div>
+                        </div>
+                    </li>  
+                    {% endif %}
+                    <!-- Transaction Menu -->
+                    <li class="nav-item">                    
+                        <div class="dropdown {% if menu == 'Transaction' %} show {% endif %}">
+                            <a class="dropdown-toggle nav-link" role="button" data-toggle="dropdown">
+                            Transaction
+                            </a>                      
+                            <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </li> 
+                </ul>  
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Log out</a>
+                    </li>                           
+                </ul>            
+            </div>
+        </nav>          
+        <!-- end Navbar -->
+        {% endif %}
+        <div class="content-wrapper">
+            {% block content %} {% endblock %}
+        </div>
+    </body>
+</html>

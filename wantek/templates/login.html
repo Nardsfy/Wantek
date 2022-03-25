@@ -1,0 +1,44 @@
+{% extends "layout.html" %} {% block content %}
+<body>
+    <div class="container mt-2">        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">{{ namaAplikasi }}</h3>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}                                                  
+                        {% for category, message in messages %}
+                            <div class="row alert {% if category == 'error' %}alert-danger {% elif category == 'success' %} alert-success {% endif %}"
+                            role="alert">
+                                <div class="col text-center">
+                                    {{ message }}
+                                </div>
+                            </div>
+                        {% endfor %}                                
+                    {% endif %}
+                {% endwith %}  
+                <form id="loginPost" method="POST" action="{{ url_for('loginPost') }}">
+                    <div class="row d-flex justify-content-center">                                                     
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="username">Username</label>                        
+                                <input type="text" id="username" name="username" class="form-control" placeholder="Username.." required>                    
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Password.." required>                    
+                            </div>
+                        </div>                               
+                    </div>
+                    <div class="row text-center">
+                        <div class="col">                      
+                            <input type="submit" class="btn btn-secondary" value="Log in">                                        
+                        </div>                
+                    </div>
+                </form>
+            </div>
+        </div>        
+    </div>    
+</body>
+{% endblock %}
